@@ -1,2 +1,8 @@
-package com.example.project_2_baejewoo.dto;public class ResponseDto {
+package com.example.project_2_baejewoo.dto;
+
+import lombok.Data;
+
+@Data
+public class ResponseDto {
+    String message;
 }

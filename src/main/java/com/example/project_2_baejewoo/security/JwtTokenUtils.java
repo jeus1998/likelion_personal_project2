@@ -1,4 +1,4 @@
-package com.example.miniproject_basic_baejeu.security;
+package com.example.project_2_baejewoo.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;

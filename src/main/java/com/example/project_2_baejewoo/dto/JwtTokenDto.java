@@ -1,4 +1,4 @@
-package com.example.miniproject_basic_baejeu.security;
+package com.example.project_2_baejewoo.dto;
 import lombok.Data;
 
 @Data

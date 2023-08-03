@@ -1,8 +1,8 @@
-package com.example.miniproject_basic_baejeu.service;
+package com.example.project_2_baejewoo.security;
 
-import com.example.miniproject_basic_baejeu.entity.UserEntity;
-import com.example.miniproject_basic_baejeu.repository.UserRepository;
-import com.example.miniproject_basic_baejeu.security.CustomUserDetails;
+import com.example.project_2_baejewoo.entity.UserEntity;
+import com.example.project_2_baejewoo.repository.UserRepository;
+import com.example.project_2_baejewoo.security.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.util.Optional;
 
 /*
