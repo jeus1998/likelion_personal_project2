@@ -20,9 +20,8 @@ public class CustomUserDetails implements UserDetails {
 
     @Getter
     private Long id;
-    @NonNull
+
     private String username; // 아이디
-    @NonNull
     private String password; // 비밀번호
 
     private String address; // 주소
