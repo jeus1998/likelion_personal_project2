@@ -3,6 +3,7 @@ package com.example.project_2_baejewoo.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,5 +30,19 @@ public class UserEntity {
 
     // 로그인 한 상태에서, 자신을 대표하는 사진, 프로필 사진을 업로드 할 수 있다.
     private String profile_image;
+
+    // 어떤 필드가 반대쪽 필드를 매핑 하는지를 설정
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)  // 유저 삭제시 전부 삭제
+    List<ArticleEntity> articles = new ArrayList<>(); // 게시글
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    List<LikeArticleEntity> likesArticles = new ArrayList<>(); // 게시글 좋아요
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    List<CommentEntity> comments = new ArrayList<>(); // 게시글 댓글
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    List<ArticleImagesEntity> articleImages = new ArrayList<>(); // 게시글 이미지
+
 
 }
