@@ -23,7 +23,7 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authHttp -> authHttp
                         .requestMatchers(
-                                "/token/register", "/token/login"
+                                "/user/register", "/user/login"
                                    // 회원가입         // 로그인
                         ).anonymous()
                         .anyRequest()

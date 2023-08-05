@@ -23,7 +23,7 @@ public class ArticleEntity {
 
     private boolean draft;
 
-    private LocalDateTime delete_at; // delete_at 이 null 이 아니면 피드를 못 보게한다 -> softdelete?
+    private String delete_at; // delete_at 이 null 이 아니면 피드를 못 보게한다 -> softdelete?
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id") // 외래키 맵핑

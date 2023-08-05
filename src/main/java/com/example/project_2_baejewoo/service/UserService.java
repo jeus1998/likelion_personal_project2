@@ -39,7 +39,7 @@ public class UserService {
         else {
             Long userId = user.getId();
             // 2-1. 폴더만 만드는 과정 -> profile/1/
-            String profileDir = String.format("profile/%d/", userId);
+            String profileDir = String.format("profile/%s/", username);
             try {
                 Files.createDirectories(Path.of(profileDir));
             } catch (IOException e) {
