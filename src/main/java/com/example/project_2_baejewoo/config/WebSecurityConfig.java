@@ -22,6 +22,8 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authHttp -> authHttp
+                        .requestMatchers("/article/{username}", "/static/**")
+                        .permitAll()
                         .requestMatchers(
                                 "/user/register", "/user/login"
                                    // 회원가입         // 로그인

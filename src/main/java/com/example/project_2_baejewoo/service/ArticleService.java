@@ -1,6 +1,7 @@
 package com.example.project_2_baejewoo.service;
 
 import com.example.project_2_baejewoo.dto.ArticleDto;
+import com.example.project_2_baejewoo.dto.ArticleFeedsDto;
 import com.example.project_2_baejewoo.entity.ArticleEntity;
 import com.example.project_2_baejewoo.entity.ArticleImagesEntity;
 import com.example.project_2_baejewoo.entity.UserEntity;
@@ -9,6 +10,10 @@ import com.example.project_2_baejewoo.repository.ArticleRepository;
 import com.example.project_2_baejewoo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -19,6 +24,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -62,7 +69,7 @@ public class ArticleService {
         }
 
         // 2-1. 폴더만 만드는 과정 -> article/1/
-        String profileDir = String.format("article/%d/", id);
+        String profileDir = String.format("media/article/%d/", id);
 
         try {
             Files.createDirectories(Path.of(profileDir));
@@ -72,12 +79,6 @@ public class ArticleService {
 
         // 2-2. 확장자를 포함한 이미지 이름 만들기
         String originalFilename = Image.getOriginalFilename();
-       /* log.info(originalFilename);
-        String[] fileNameSplit = originalFilename.split("\\.");
-        String extension = fileNameSplit[fileNameSplit.length - 1];
-        String original  = fileNameSplit[0];
-        String profileFilename = original + "." + extension;
-        log.info(profileFilename);*/
 
         // 2-3. 폴더와 파일 경로를 포함한 이름 만들기
         String profilePath = profileDir + originalFilename;
@@ -92,8 +93,65 @@ public class ArticleService {
         // 4. (정적 프로필 이미지를 회수할 수 있는 URL)
         ArticleImagesEntity ImagesEntity = new ArticleImagesEntity();
         ImagesEntity.setArticle(article);
-        ImagesEntity.setArticle_image_url(String.format("/static/%s", originalFilename));
+        ImagesEntity.setArticle_image_url(String.format("/static/article/%d/%s", id, originalFilename));
         articleImageRepository.save(ImagesEntity);
+    }
+
+    // 2-3 작성한 사용자 기준으로 목록 형태의 조회가 가능하다.
+    public Page<ArticleFeedsDto> searchFeeds (String username, Long page, Long limit){
+
+        List<ArticleEntity> feedAllLists = articleRepository.findAll();
+
+        List<ArticleEntity> feedFilteredLists = new ArrayList<>();
+
+        for (ArticleEntity target : feedAllLists){
+
+            if (target.getUser().getUsername().equals(username) && target.getDelete_at() == null){
+                feedFilteredLists.add(target);
+            }
+
+        }
+        if(feedFilteredLists.isEmpty()){
+            log.info(username +"의 피드가 없습니다.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        // 피드에 넣은 이미지가 없으면 필요한 : 대표 이미지 url : 관리자의 프로필 이미지 url
+        Optional<UserEntity> adminEntity = userRepository.findByUsername("admin");
+        UserEntity admin = adminEntity.get();
+        String url = admin.getProfile_image();
+
+
+        // 요구사항에 맞게 데이터 저장
+        List<ArticleFeedsDto> articleFeedsDto = new ArrayList<>();
+        for (ArticleEntity target: feedFilteredLists ) {
+
+            ArticleFeedsDto tarketDto  = new ArticleFeedsDto();
+            tarketDto.setId(target.getId());
+            tarketDto.setUsername(target.getUser().getUsername());
+            tarketDto.setTitle(target.getTitle());
+            tarketDto.setContent(target.getContent());
+
+            Optional<ArticleImagesEntity> articleImages = articleImageRepository.findFirstByArticleIdOrderByIdAsc(target.getId());
+            // 피드에 넣은 이미지가 없으면
+            if(articleImages.isEmpty()){
+                tarketDto.setRepresentImageUrl(url);
+            }
+            // 피드에 넣은 이미지가 있으면
+            else {
+                ArticleImagesEntity articleImagesEntity = articleImages.get();
+                tarketDto.setRepresentImageUrl(articleImagesEntity.getArticle_image_url());
+            }
+            articleFeedsDto.add(tarketDto);
+        }
+
+        int totalItems = articleFeedsDto.size();
+        int start = Math.toIntExact(page * limit);
+        int end = Math.min((start + Math.toIntExact(limit)), totalItems);
+        List<ArticleFeedsDto> pagedFeeds = articleFeedsDto.subList(start, end);
+
+        return new PageImpl<>(pagedFeeds, Pageable.unpaged(), totalItems);
+
     }
 
     // delete
@@ -117,7 +175,5 @@ public class ArticleService {
         articleRepository.save(article);
 
     }
-
-
 
 }
