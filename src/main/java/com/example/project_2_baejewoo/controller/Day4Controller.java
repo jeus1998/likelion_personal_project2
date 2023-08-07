@@ -6,10 +6,7 @@ import com.example.project_2_baejewoo.service.Day4Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -33,6 +30,15 @@ public class Day4Controller {
         String user = service.followUser(userId, authentication);
         ResponseDto response = new ResponseDto();
         response.setMessage( user + "를 팔로우 하였습니다.");
+        return response;
+    }
+
+    // 4-3 로그인 한 사용자는 팔로우 한 사용자의 팔로우를 해제할 수 있다.
+    @DeleteMapping("/follow/{userId}")
+    public ResponseDto unLockUser(@PathVariable("userId") Long userId, Authentication authentication){
+        String user = service.unLockUser(userId, authentication);
+        ResponseDto response = new ResponseDto();
+        response.setMessage( user + "를 팔로우 해제 하였습니다.");
         return response;
     }
 

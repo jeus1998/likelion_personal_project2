@@ -41,10 +41,10 @@ public class UserEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<CommentEntity> comments = new ArrayList<>(); // 게시글 댓글
 
-    @OneToMany(mappedBy = "user_follower", cascade = CascadeType.ALL) // 해당 유저를 누가 팔로우 하는지
+    @OneToMany(mappedBy = "userFollower", cascade = CascadeType.ALL) // 해당 유저를 누가 팔로우 하는지
     List<UserFollowsEntity> followers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user_following", cascade = CascadeType.ALL) //  해당 유저가 누구를 팔로우 하는지
+    @OneToMany(mappedBy = "userFollowing", cascade = CascadeType.ALL) //  해당 유저가 누구를 팔로우 하는지
     List<UserFollowsEntity> followings = new ArrayList<>();
 
     @OneToMany(mappedBy = "from_user", cascade = CascadeType.ALL) // 한 유저가 여러명한테 친구 요청을 보내는게 가능하다.
