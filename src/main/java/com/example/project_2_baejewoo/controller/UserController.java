@@ -49,7 +49,6 @@ public class UserController {
     private final UserDetailsManager manager;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtils;
-
     private final JpaUserDetailsManager userDetailsManager;
 
     public UserController(

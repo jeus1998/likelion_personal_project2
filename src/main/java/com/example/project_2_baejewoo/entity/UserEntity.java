@@ -41,8 +41,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<CommentEntity> comments = new ArrayList<>(); // 게시글 댓글
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    List<ArticleImagesEntity> articleImages = new ArrayList<>(); // 게시글 이미지
-
+   /* @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    List<ArticleImagesEntity> articleImages = new ArrayList<>(); // 게시글 이미지*/
 
 }

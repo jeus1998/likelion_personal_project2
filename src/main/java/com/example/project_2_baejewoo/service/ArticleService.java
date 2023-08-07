@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -152,6 +151,71 @@ public class ArticleService {
 
         return new PageImpl<>(pagedFeeds, Pageable.unpaged(), totalItems);
 
+    }
+    // update content or title or 이미지 삭제
+    public void updateFeed(Long articleId, Authentication authentication, ArticleDto dto){
+        String username = authentication.getName();
+
+        Optional<ArticleEntity> articleEntity = articleRepository.findById(articleId);
+
+         if (!articleEntity.isPresent()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+         }
+
+        ArticleEntity article = articleEntity.get();
+        if (!article.getUser().getUsername().equals(username)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        // NullPointerException 방지용 if 문들
+        // title 수정
+
+        log.info(dto.getContent());
+        if(!dto.getTitle().isEmpty()){
+            article.setTitle(dto.getTitle());
+            log.info("title 수정");
+        }
+
+        // content 수정
+        if(!dto.getContent().isEmpty()){
+            article.setContent(dto.getContent());
+            log.info("cotent 수정");
+        }
+        // 수정된 내용 저장
+        articleRepository.save(article);
+
+
+        }
+
+    public void deleteImage(Long articleId, Authentication authentication, Long  imageId){
+        String username = authentication.getName();
+
+        Optional<ArticleEntity> articleEntity = articleRepository.findById(articleId);
+        if (!articleEntity.isPresent()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        ArticleEntity article = articleEntity.get();
+        if (!article.getUser().getUsername().equals(username)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        // 이미지 삭제
+        if(imageId!=null) {
+            Optional<ArticleImagesEntity> articleImages = articleImageRepository.findById(imageId);
+            if (articleImages.isEmpty()) {
+                log.info("해당 이미지가 없습니다!");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+            ArticleImagesEntity articleImage = articleImages.get();
+
+            // 지울려고하는 imageId가 해당 피드가 아니라면 잘못된 요청
+            if (articleId != articleImage.getArticle().getId()) {
+                log.info("지울려고 하는 이미지가 해당 피드의 이미지가 아닙니다");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+            // DB에서 삭제
+            articleImageRepository.deleteById(imageId);
+            // 실제 서버에서 이미지 삭제
+        }
     }
 
     // delete
