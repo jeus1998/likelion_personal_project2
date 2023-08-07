@@ -2,6 +2,7 @@ package com.example.project_2_baejewoo.controller;
 
 import com.example.project_2_baejewoo.dto.ArticleDto;
 import com.example.project_2_baejewoo.dto.ArticleFeedsDto;
+import com.example.project_2_baejewoo.dto.ArticleSingleDto;
 import com.example.project_2_baejewoo.dto.ResponseDto;
 import com.example.project_2_baejewoo.service.ArticleService;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +53,10 @@ public class ArticleController {
     // 피드에 연관된 모든 정보가 포함되어야 한다. 모든 이미지의 각각의 url과 댓글 목록, 좋아요 숫자
     // 피드를 단독 조회할 시, 로그인이 된 상태여야 한다. <- 작성자를 의미?  or 인스타그램 사용자?
 
-
+    @GetMapping("/single/{articleId}")
+    public ArticleSingleDto single(@PathVariable("articleId")Long articleId, Authentication authentication){
+        return articleService.singleSearch(articleId, authentication);
+    }
 
     // 2-5 피드는 수정이 가능하다.
     // 피드에 등록된 이미지의 경우, 삭제 및 추가만 가능하다.

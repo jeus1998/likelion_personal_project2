@@ -13,14 +13,5 @@ public class ArticleDto {
     private boolean draft;
     private String delete_at;
 
-    public static ArticleDto fromEntity(ArticleEntity entity){
-        ArticleDto dto = new ArticleDto();
-        dto.setId(entity.getId());
-        dto.setTitle(entity.getTitle());
-        dto.setContent(entity.getContent());
-        dto.setDraft(entity.isDraft());
-        dto.setDelete_at(entity.getDelete_at());
-        return dto;
-    }
 
 }

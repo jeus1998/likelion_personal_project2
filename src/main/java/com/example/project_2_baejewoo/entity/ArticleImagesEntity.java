@@ -19,10 +19,4 @@ public class ArticleImagesEntity {
     @JoinColumn(name = "article_id")
     ArticleEntity article;
 
-/*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    UserEntity user;
-*/
-
 }

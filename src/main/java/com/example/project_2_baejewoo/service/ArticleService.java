@@ -2,12 +2,9 @@ package com.example.project_2_baejewoo.service;
 
 import com.example.project_2_baejewoo.dto.ArticleDto;
 import com.example.project_2_baejewoo.dto.ArticleFeedsDto;
-import com.example.project_2_baejewoo.entity.ArticleEntity;
-import com.example.project_2_baejewoo.entity.ArticleImagesEntity;
-import com.example.project_2_baejewoo.entity.UserEntity;
-import com.example.project_2_baejewoo.repository.ArticleImageRepository;
-import com.example.project_2_baejewoo.repository.ArticleRepository;
-import com.example.project_2_baejewoo.repository.UserRepository;
+import com.example.project_2_baejewoo.dto.ArticleSingleDto;
+import com.example.project_2_baejewoo.entity.*;
+import com.example.project_2_baejewoo.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,9 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -35,6 +30,8 @@ public class ArticleService {
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final ArticleImageRepository articleImageRepository;
+    private final CommentRepository commentRepository;
+    private final LikeArticleRepository likeArticleRepository;
 
     public void writeFeed(ArticleDto dto, Authentication authentication){
 
@@ -152,6 +149,69 @@ public class ArticleService {
         return new PageImpl<>(pagedFeeds, Pageable.unpaged(), totalItems);
 
     }
+
+    // 2-4 피드 단독 조회 피드에 해당하는 모든 정보 보여주기
+    public ArticleSingleDto singleSearch(Long articleId, Authentication authentication){
+
+        String username = authentication.getName();
+
+        Optional<ArticleEntity> articleEntity = articleRepository.findById(articleId);
+        if (!articleEntity.isPresent()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+
+        // 로그인이 된 상태 != 작성자
+        Optional<UserEntity> userEntity = userRepository.findByUsername(username);
+        if (!userEntity.isPresent()){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        ArticleEntity article = articleEntity.get();
+
+        // 삭제 되었는지 확인
+        if (article.getDelete_at()!=null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        ArticleSingleDto articleSingleDto = new ArticleSingleDto();
+
+        articleSingleDto.setUsername(article.getUser().getUsername());
+        articleSingleDto.setArticleId(article.getId());
+        articleSingleDto.setTitle(article.getTitle());
+        articleSingleDto.setContent(article.getContent());
+
+        // url List
+        List<ArticleImagesEntity> imagesEntityListList = articleImageRepository.findByArticleId(articleId);
+
+        List<String> imagesList = new ArrayList<>();
+        for (ArticleImagesEntity target : imagesEntityListList ) {
+            imagesList.add(target.getArticle_image_url());
+        }
+        articleSingleDto.setImages_url(imagesList);
+
+        // comment List
+        List<CommentEntity> commentEntityList = commentRepository.findByArticleId(articleId);
+        List<Map<String, String>> commentList = new ArrayList<>();
+        for (CommentEntity target : commentEntityList) {
+            Map<String, String> commentMap = new HashMap<>();
+            if(target.getDelete_at() == null) {
+                commentMap.put("username", target.getUser().getUsername());
+                commentMap.put("content", target.getContent());
+                commentList.add(commentMap);
+            }
+        }
+        articleSingleDto.setComments(commentList);
+
+        // numlikes
+
+        List<LikeArticleEntity> likeArticleEntityList = likeArticleRepository.findByArticleId(articleId);
+        Long numLikes = (long) likeArticleEntityList.size();
+
+        articleSingleDto.setNumLikes(numLikes);
+
+        return articleSingleDto;
+    }
+
     // update content or title or 이미지 삭제
     public void updateFeed(Long articleId, Authentication authentication, ArticleDto dto){
         String username = authentication.getName();
@@ -185,7 +245,6 @@ public class ArticleService {
 
 
         }
-
     public void deleteImage(Long articleId, Authentication authentication, Long  imageId){
         String username = authentication.getName();
 
