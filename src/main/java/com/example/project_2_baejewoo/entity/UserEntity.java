@@ -47,9 +47,9 @@ public class UserEntity {
     @OneToMany(mappedBy = "userFollowing", cascade = CascadeType.ALL) //  해당 유저가 누구를 팔로우 하는지
     List<UserFollowsEntity> followings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "from_user", cascade = CascadeType.ALL) // 한 유저가 여러명한테 친구 요청을 보내는게 가능하다.
+    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL) // 한 유저가 여러명한테 친구 요청을 보내는게 가능하다.
     List<UserFriendsEntity> sendFriendRequests = new ArrayList<>();
 
-    @OneToMany(mappedBy = "to_user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL)
     List<UserFriendsEntity> receivedFriendRequests = new ArrayList<>(); // 한 유저는 여러명한테 친구 요청을 받는게 가능하다.
 }

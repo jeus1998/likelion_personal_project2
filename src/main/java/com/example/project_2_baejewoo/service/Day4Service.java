@@ -1,18 +1,21 @@
 package com.example.project_2_baejewoo.service;
 
+import com.example.project_2_baejewoo.dto.FriendRequestListDto;
 import com.example.project_2_baejewoo.dto.UserInformationDto;
 import com.example.project_2_baejewoo.entity.UserEntity;
 import com.example.project_2_baejewoo.entity.UserFollowsEntity;
+import com.example.project_2_baejewoo.entity.UserFriendsEntity;
 import com.example.project_2_baejewoo.repository.UserFollowRepository;
+import com.example.project_2_baejewoo.repository.UserFriendRepository;
 import com.example.project_2_baejewoo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -22,6 +25,7 @@ public class Day4Service {
 
     private final UserRepository userRepository;
     private final UserFollowRepository userFollowRepository;
+    private final UserFriendRepository userFriendRepository;
     public UserInformationDto searchUser(Long userId){
         Optional<UserEntity> userEntity = userRepository.findById(userId);
         if (userEntity.isEmpty()){
@@ -98,4 +102,61 @@ public class Day4Service {
 
         return delete;
     }
+    // 친구 요청 메서드
+    public String sendRequest(Long userId, Authentication authentication){
+        String username = authentication.getName();
+
+        Optional<UserEntity> userEntity = userRepository.findByUsername(username);
+        if(userEntity.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        UserEntity fromUser = userEntity.get(); // 현재 사용자가 요청
+        Long fromUserId = fromUser.getId();
+
+        Optional<UserEntity> userEntity2 = userRepository.findById(userId);
+        if(userEntity2.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        UserEntity toUser = userEntity2.get(); // 친구 요청 받는쪽
+        String toUserName = toUser.getUsername();
+
+        // 친구요청은 자기 자신한테 보낼수 없다.
+        if (username.equals(toUserName)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        // 이미 요청이 존재하는지 체크하기 or 이미 친구 관계인지
+        Optional<UserFriendsEntity> userFriendsEntity = userFriendRepository.findByFromUserIdAndToUserId(fromUserId, userId);
+        if(userFriendsEntity.isPresent()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        UserFriendsEntity userFriends = new UserFriendsEntity();
+        userFriends.setFromUser(fromUser);
+        userFriends.setToUser(toUser);
+        userFriends.setRequest("친구요청");
+        userFriendRepository.save(userFriends);
+
+        return toUserName;
+    }
+    // 친구 요청 목록 확인 메서드
+    public FriendRequestListDto getRequest(Authentication authentication){
+        String username = authentication.getName(); // toUser
+        Optional<UserEntity> userEntity = userRepository.findByUsername(username);
+        if (userEntity.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        Long toUserId = userEntity.get().getId();
+
+        List<UserFriendsEntity> userFriendsEntities = userFriendRepository.findByToUserId(toUserId);
+        if (userFriendsEntities.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        FriendRequestListDto friendRequestListDto = new FriendRequestListDto();
+        for (UserFriendsEntity target : userFriendsEntities ) {
+            friendRequestListDto.addFriendRequest(target.getId(), target.getFromUser().getUsername(), target.getRequest());
+        }
+
+        return friendRequestListDto;
+    }
+
 }
