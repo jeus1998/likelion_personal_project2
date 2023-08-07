@@ -15,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -159,7 +158,6 @@ public class ArticleService {
         if (!articleEntity.isPresent()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
 
         // 로그인이 된 상태 != 작성자
         Optional<UserEntity> userEntity = userRepository.findByUsername(username);

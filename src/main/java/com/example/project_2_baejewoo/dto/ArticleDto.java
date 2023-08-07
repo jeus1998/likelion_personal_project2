@@ -10,8 +10,6 @@ public class ArticleDto {
     private Long id;
     private String title;
     private String content;
-    private boolean draft;
     private String delete_at;
-
 
 }
