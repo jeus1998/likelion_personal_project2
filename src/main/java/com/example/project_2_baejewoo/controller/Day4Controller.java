@@ -74,7 +74,15 @@ public class Day4Controller {
 
     // 4-5 사용자의 팔로우 한 모든 사용자의 피드 목록을 조회할 수 있다.
     // 이때 작성한 사용자와 무관하게 작성된 순서의 역순으로 조회한다.
+    // 자신이 팔로우 한 사람들에 대한 목록
+    @GetMapping("/follower/feeds")
+    public Page<ArticleFeedsDto>followerFeeds (@RequestParam(value = "page", defaultValue = "0") Long page,
+                                              @RequestParam(value = "limit", defaultValue = "3") Long limit,
+                                              Authentication authentication)
+    {
+        return service.followerFeeds(page, limit, authentication);
 
+    }
 
     // 4-6 사용자의 모든 친구 피드 목록을 조회할 수 있다.
     @GetMapping("/friends/feeds")
