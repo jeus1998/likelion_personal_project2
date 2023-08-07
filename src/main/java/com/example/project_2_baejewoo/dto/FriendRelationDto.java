@@ -3,5 +3,5 @@ import lombok.Data;
 
 @Data
 public class FriendRelationDto {
-    private String request;
+    private String request; // 수락 or 거절
 }

@@ -1,5 +1,5 @@
 package com.example.project_2_baejewoo.controller;
-
+import com.example.project_2_baejewoo.dto.FriendRelationDto;
 import com.example.project_2_baejewoo.dto.FriendRequestListDto;
 import com.example.project_2_baejewoo.dto.ResponseDto;
 import com.example.project_2_baejewoo.dto.UserInformationDto;
@@ -64,8 +64,15 @@ public class Day4Controller {
     }
 
     // 수락 or 거절 조회한 id 즉 요청 id를 통해서 요청을 수락or 거절 결정
-  /*  @PutMapping("/friend/{relationId}")
-    public ResponseDto */
+    @PutMapping("/friend/{relationId}")
+    public ResponseDto decideRequest(@PathVariable("relationId")Long relationId, Authentication authentication,
+                                     @RequestBody FriendRelationDto dto){
+
+        service.decideRequest(relationId, authentication, dto);
+        ResponseDto response = new ResponseDto();
+        response.setMessage("친구요청을" + dto.getRequest()+ "하였습니다.");
+        return response;
+    }
 
     // 4-5 사용자의 팔로우 한 모든 사용자의 피드 목록을 조회할 수 있다.
     // 이때 작성한 사용자와 무관하게 작성된 순서의 역순으로 조회한다.

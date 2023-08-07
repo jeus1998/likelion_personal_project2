@@ -1,5 +1,6 @@
 package com.example.project_2_baejewoo.service;
 
+import com.example.project_2_baejewoo.dto.FriendRelationDto;
 import com.example.project_2_baejewoo.dto.FriendRequestListDto;
 import com.example.project_2_baejewoo.dto.UserInformationDto;
 import com.example.project_2_baejewoo.entity.UserEntity;
@@ -125,11 +126,18 @@ public class Day4Service {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        // 이미 요청이 존재하는지 체크하기 or 이미 친구 관계인지
+        // 이미 자기 자신이 한 요청이 존재하는지 체크하기 or 이미 친구 관계인지
         Optional<UserFriendsEntity> userFriendsEntity = userFriendRepository.findByFromUserIdAndToUserId(fromUserId, userId);
         if(userFriendsEntity.isPresent()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+
+        // 이미 상대방쪽에서 요청을 했으면 요청 불가
+        Optional<UserFriendsEntity> userFriendsEntity2 = userFriendRepository.findByFromUserIdAndToUserId(userId, fromUserId);
+        if(userFriendsEntity2.isPresent()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
         UserFriendsEntity userFriends = new UserFriendsEntity();
         userFriends.setFromUser(fromUser);
         userFriends.setToUser(toUser);
@@ -157,6 +165,46 @@ public class Day4Service {
         }
 
         return friendRequestListDto;
+    }
+    // 수락 or 거절 -> 관계 형성
+    public void decideRequest(Long relationId, Authentication authentication, FriendRelationDto dto){
+
+        String username = authentication.getName();
+
+        Optional<UserFriendsEntity> userFriendsEntity = userFriendRepository.findById(relationId);
+        if (userFriendsEntity.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        UserFriendsEntity userFriends = userFriendsEntity.get();
+
+        // 현재 사용자가 친구 요청을 받은 사람이 아니라면
+        if (!userFriends.getToUser().getUsername().equals(username)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        Long fromUserId = userFriends.getFromUser().getId();
+        Long toUserId = userFriends.getToUser().getId();
+
+
+        // 관계 설정용
+        Optional<UserEntity> fromUserEntity = userRepository.findById(fromUserId);
+        UserEntity fromUser = fromUserEntity.get();
+        Optional<UserEntity> toUserEntity = userRepository.findById(toUserId);
+        UserEntity toUser = toUserEntity.get();
+
+        if (dto.getRequest().equals("수락")){
+            userFriends.setRequest("친구");
+            userFriendRepository.save(userFriends);
+            UserFriendsEntity friendsEntity = new UserFriendsEntity();
+            friendsEntity.setRequest("친구");
+            friendsEntity.setFromUser(toUser); // 반대로 설정
+            friendsEntity.setToUser(fromUser);
+            userFriendRepository.save(friendsEntity);
+        }
+        else if (dto.getRequest().equals("거절")){
+            userFriendRepository.deleteById(relationId);
+        }
+
     }
 
 }
