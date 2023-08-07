@@ -1,21 +1,22 @@
 package com.example.project_2_baejewoo.service;
 
+import com.example.project_2_baejewoo.dto.ArticleFeedsDto;
 import com.example.project_2_baejewoo.dto.FriendRelationDto;
 import com.example.project_2_baejewoo.dto.FriendRequestListDto;
 import com.example.project_2_baejewoo.dto.UserInformationDto;
-import com.example.project_2_baejewoo.entity.UserEntity;
-import com.example.project_2_baejewoo.entity.UserFollowsEntity;
-import com.example.project_2_baejewoo.entity.UserFriendsEntity;
-import com.example.project_2_baejewoo.repository.UserFollowRepository;
-import com.example.project_2_baejewoo.repository.UserFriendRepository;
-import com.example.project_2_baejewoo.repository.UserRepository;
+import com.example.project_2_baejewoo.entity.*;
+import com.example.project_2_baejewoo.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,8 @@ public class Day4Service {
     private final UserRepository userRepository;
     private final UserFollowRepository userFollowRepository;
     private final UserFriendRepository userFriendRepository;
+    private final ArticleRepository articleRepository;
+    private final ArticleImageRepository articleImageRepository;
     public UserInformationDto searchUser(Long userId){
         Optional<UserEntity> userEntity = userRepository.findById(userId);
         if (userEntity.isEmpty()){
@@ -161,6 +164,8 @@ public class Day4Service {
         }
         FriendRequestListDto friendRequestListDto = new FriendRequestListDto();
         for (UserFriendsEntity target : userFriendsEntities ) {
+            // 이미 친구면 요청 목록에는 없어야한다.
+            if(!target.getRequest().equals("친구"))
             friendRequestListDto.addFriendRequest(target.getId(), target.getFromUser().getUsername(), target.getRequest());
         }
 
@@ -207,4 +212,64 @@ public class Day4Service {
 
     }
 
+
+    // 4-6
+    public Page<ArticleFeedsDto> friendsFeeds(Long page, Long limit, Authentication authentication){
+
+        String username = authentication.getName();
+        Optional<UserEntity> userEntity = userRepository.findByUsername(username);
+        UserEntity user = userEntity.get();
+        Long currentId = user.getId();
+
+        List<Long> followersIds = new ArrayList<>();
+
+        List<UserFriendsEntity> userFriendsEntities = userFriendRepository.findAll();
+        for ( UserFriendsEntity target : userFriendsEntities ) {
+            if (target.getRequest().equals("친구") && target.getFromUser().getId() == currentId){
+                followersIds.add(target.getToUser().getId());
+            }
+        }
+        // 친구가 없다면?
+        if (followersIds.size()==0){
+            log.info("친구가 없어요ㅠㅠ");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        // 피드에 넣은 이미지가 없으면 필요한 : 대표 이미지 url : 관리자의 프로필 이미지 url
+        Optional<UserEntity> adminEntity = userRepository.findByUsername("admin");
+        UserEntity admin = adminEntity.get();
+        String url = admin.getProfile_image();
+
+
+        List<ArticleFeedsDto> allFriendFeeds = new ArrayList<>();
+
+        for (Long friendId : followersIds) {
+            List<ArticleEntity> friendFeeds = articleRepository.findByUserIdAndDeleteAtIsNull(friendId);
+
+            for (ArticleEntity target : friendFeeds){
+                ArticleFeedsDto tarketDto = new ArticleFeedsDto();
+                tarketDto.setId(target.getId());
+                tarketDto.setUsername(target.getUser().getUsername());
+                tarketDto.setTitle(target.getTitle());
+                tarketDto.setContent(target.getContent());
+
+                Optional<ArticleImagesEntity> articleImages = articleImageRepository.findFirstByArticleIdOrderByIdAsc(target.getId());
+                // 피드에 넣은 이미지가 없으면
+                if (articleImages.isEmpty()) {
+                    tarketDto.setRepresentImageUrl(url);
+                } else {
+                    ArticleImagesEntity articleImagesEntity = articleImages.get();
+                    tarketDto.setRepresentImageUrl(articleImagesEntity.getArticle_image_url());
+                }
+                allFriendFeeds.add(tarketDto);
+            }
+        }
+
+        int totalItems = allFriendFeeds.size();
+        int start = Math.toIntExact(page * limit);
+        int end = Math.min((start + Math.toIntExact(limit)), totalItems);
+        List<ArticleFeedsDto> pagedFeeds = allFriendFeeds.subList(start, end);
+
+        return new PageImpl<>(pagedFeeds, Pageable.unpaged(), totalItems);
+    }
 }

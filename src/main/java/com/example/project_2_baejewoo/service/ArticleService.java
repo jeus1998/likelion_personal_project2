@@ -101,7 +101,7 @@ public class ArticleService {
 
         for (ArticleEntity target : feedAllLists){
 
-            if (target.getUser().getUsername().equals(username) && target.getDelete_at() == null){
+            if (target.getUser().getUsername().equals(username) && target.getDeleteAt() == null){
                 feedFilteredLists.add(target);
             }
 
@@ -167,7 +167,7 @@ public class ArticleService {
         ArticleEntity article = articleEntity.get();
 
         // 삭제 되었는지 확인
-        if (article.getDelete_at()!=null){
+        if (article.getDeleteAt()!=null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
@@ -302,7 +302,7 @@ public class ArticleService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-        article.setDelete_at(time.toString()); // softDelete : DB에서는 삭제 X
+        article.setDeleteAt(time.toString()); // softDelete : DB에서는 삭제 X
 
         articleRepository.save(article);
 

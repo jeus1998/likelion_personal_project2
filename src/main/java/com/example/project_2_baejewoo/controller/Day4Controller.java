@@ -1,11 +1,9 @@
 package com.example.project_2_baejewoo.controller;
-import com.example.project_2_baejewoo.dto.FriendRelationDto;
-import com.example.project_2_baejewoo.dto.FriendRequestListDto;
-import com.example.project_2_baejewoo.dto.ResponseDto;
-import com.example.project_2_baejewoo.dto.UserInformationDto;
+import com.example.project_2_baejewoo.dto.*;
 import com.example.project_2_baejewoo.service.Day4Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,4 +75,14 @@ public class Day4Controller {
     // 4-5 사용자의 팔로우 한 모든 사용자의 피드 목록을 조회할 수 있다.
     // 이때 작성한 사용자와 무관하게 작성된 순서의 역순으로 조회한다.
 
+
+    // 4-6 사용자의 모든 친구 피드 목록을 조회할 수 있다.
+    @GetMapping("/friends/feeds")
+    public Page<ArticleFeedsDto>friendsFeeds (@RequestParam(value = "page", defaultValue = "0") Long page,
+                                                 @RequestParam(value = "limit", defaultValue = "3") Long limit,
+                                                 Authentication authentication)
+    {
+        return service.friendsFeeds(page, limit, authentication);
+
+    }
 }

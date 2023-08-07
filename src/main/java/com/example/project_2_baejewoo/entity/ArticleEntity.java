@@ -21,7 +21,7 @@ public class ArticleEntity {
 
     private String content;
 
-    private String delete_at; // delete_at 이 null 이 아니면 피드를 못 보게한다 -> softdelete?
+    private String deleteAt; // delete_at 이 null 이 아니면 피드를 못 보게한다 -> softdelete?
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id") // 외래키 맵핑
