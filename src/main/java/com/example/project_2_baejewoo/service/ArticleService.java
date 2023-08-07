@@ -212,9 +212,20 @@ public class ArticleService {
                 log.info("지울려고 하는 이미지가 해당 피드의 이미지가 아닙니다");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
+
+            String[] split = articleImage.getArticle_image_url().split("/");
+            String name = split[split.length-1];
+            String imagePath = "media/article/" + articleId + "/" + name;
+
+            // 실제 서버에서 이미지 삭제
+            try {
+                Files.delete(Path.of(imagePath));
+            } catch (IOException e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
             // DB에서 삭제
             articleImageRepository.deleteById(imageId);
-            // 실제 서버에서 이미지 삭제
         }
     }
 
