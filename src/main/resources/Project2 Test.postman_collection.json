@@ -1,0 +1,414 @@
+{
+	"info": {
+		"_postman_id": "798bf2a4-c3ee-4019-a9c5-8b5f5b8cc403",
+		"name": "Project2 Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28055660"
+	},
+	"item": [
+		{
+			"name": "/user/register 회원가입",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"baejeu12\",\r\n    \"password\": \"jeu1212\",\r\n    \"passwordCheck\": \"jeu1212\",\r\n    \r\n    \"address\": \"광주\",\r\n    \"email\": \"baejeu@naver.com\",\r\n    \"phone\": \"010-9289-1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:1212/user/register"
+			},
+			"response": []
+		},
+		{
+			"name": "/user/login 로그인",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"username\": \"baejeu12\",\r\n    \"password\": \"jeu1212\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:1212/user/login"
+			},
+			"response": []
+		},
+		{
+			"name": "GET /user/check / 로그인 UserCheck",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkxMDUxNDEyLCJleHAiOjE2OTEwNTUwMTJ9.uh5yDvK1YVKMwsxPHhJXLxJy_8DRh0eKvC9H7S8vbIWWqN8ETqKqjtYFwm_VvA3iudLkF4pUmbfG3Kj11jlttg"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:1212/user/check"
+			},
+			"response": []
+		},
+		{
+			"name": "user/profile 현재 사용자 프로필 업데이트",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYWVqZXUxMiIsImlhdCI6MTY5MTA1MTcwOCwiZXhwIjoxNjkxMDU1MzA4fQ.H3LfD8H3-hDQFN5_at-0lre36rpfVVoe6JhPmJl9Xa8-dbrjeL2sjMk4vfVonPcFXTf_DYmSqrJ7rLvZafNQeg"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/C:/Users/user/Desktop/노션 수정버전.JPG"
+						}
+					]
+				},
+				"url": "http://localhost:1212/user/profile"
+			},
+			"response": []
+		},
+		{
+			"name": "POST /article 피드등록",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"첫번째 등록\",\r\n    \"content\": \"안녕하세요!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:1212/article"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE /article/{articleId} 피드삭제",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:1212/article/1"
+			},
+			"response": []
+		},
+		{
+			"name": "POST article/{articleId} 피드에 이미지 넣기",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYWVqZXUxMiIsImlhdCI6MTY5MTA1MTcwOCwiZXhwIjoxNjkxMDU1MzA4fQ.H3LfD8H3-hDQFN5_at-0lre36rpfVVoe6JhPmJl9Xa8-dbrjeL2sjMk4vfVonPcFXTf_DYmSqrJ7rLvZafNQeg"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/C:/Users/user/Desktop/노션 수정버전.JPG"
+						}
+					]
+				},
+				"url": "http://localhost:1212/article/1"
+			},
+			"response": []
+		},
+		{
+			"name": "1212/article/{username} 2-3 목록형태 조회",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "gi",
+							"value": "gi",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:1212/article/baejeu12"
+			},
+			"response": []
+		},
+		{
+			"name": "1212/article/single/{articleId} 2-4  피드 단독조회",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "gi",
+							"value": "gi",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:1212/article/1"
+			},
+			"response": []
+		},
+		{
+			"name": "PUT /article/{articleId} 피드의 title, content 수정",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYWVqZXUxMiIsImlhdCI6MTY5MTM2OTk2MCwiZXhwIjoxNjkxMzczNTYwfQ.sbEb7B4juDsrEBgE_RDazLYAfZTiIlCH2AlbDTf__2BqdakbM7oGls9vM4DCaBgGKgQ3tM73fETUHTC20piw3A"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"수정된제목\",\r\n    \"content\": \"수정된내용\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:1212/article/1"
+			},
+			"response": []
+		},
+		{
+			"name": "PUT /article/{articleId}/images/{imageId} 피드의 이미지 삭제",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYWVqZXUxMiIsImlhdCI6MTY5MTM2OTk2MCwiZXhwIjoxNjkxMzczNTYwfQ.sbEb7B4juDsrEBgE_RDazLYAfZTiIlCH2AlbDTf__2BqdakbM7oGls9vM4DCaBgGKgQ3tM73fETUHTC20piw3A"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"수정된제목\",\r\n    \"content\": \"수정된내용\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:1212/article/1/images/2"
+			},
+			"response": []
+		},
+		{
+			"name": "POST /article/{articleId}/like 좋아요 누르기",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "http://localhost:1212/article/1/like"
+			},
+			"response": []
+		},
+		{
+			"name": "POST  /article/{articleId}/comments 댓글 달기",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"content\": \"댓글\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:1212/article/1/comments"
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  /article/{articleId}/comments/{commentsId} 댓글 수정하기",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"content\": \"댓글\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:1212/article/1/comments/1"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE  /article/{articleId}/comments/{commentsId} 댓글 삭제하기",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:1212/article/1/comments/1"
+			},
+			"response": []
+		},
+		{
+			"name": "GET /{userId}  4-1 사용자 정보 조회",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "POST /follow/{userId} 4-2 현재 사용자가 팔로우",
+			"request": {
+				"method": "POST",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE /follow/{userId} 현재 사용자를 팔로우하는 사람 팔로우 끊기",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYWVqZXUxMjEyIiwiaWF0IjoxNjkxNDI3MTgzLCJleHAiOjE2OTE0MzA3ODN9.4PLuRU6ZqxqBjU-rqo1Wy26jZIwpbj6XxRK2T9PbqL1oVG5P0cX1SPUViTwOuDjehmIXx-JOiVjP3btiX5GDJQ"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:1212/follow/2"
+			},
+			"response": []
+		},
+		{
+			"name": "POST /friend/{userId} 친구요청",
+			"request": {
+				"method": "POST",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "GET /friend 현재사용자에게 온 친구 요청 목록 확인 매서드",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:1212/friend"
+			},
+			"response": []
+		},
+		{
+			"name": "PUT /friend/{relationId}",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"request\": \"거절\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:1212/friend/"
+			},
+			"response": []
+		},
+		{
+			"name": "GET /friends/feeds 사용자의 모든 친구 피드 목록을 조회할 수 있다.",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYWVqZXUiLCJpYXQiOjE2OTE0Mzc0OTYsImV4cCI6MTY5MTQ0MTA5Nn0.uhUWDq1imkZ_zBFHYOJ0yBMCqXLlGrLVc49lORnOeRa7Oj5JCEdUQVO_pQcz2Cv-4fUbqNF4Ao7zBPD3PqMBrQ"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:1212/friends/feeds?page=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1212",
+					"path": [
+						"friends",
+						"feeds"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /follower/feeds 사용자의 모든 팔로잉 피드 목록을 조회할 수 있다.",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYWVqZXUiLCJpYXQiOjE2OTE0MzkzNTUsImV4cCI6MTY5MTQ0Mjk1NX0.HICQ7HkKU00xcWAuRMG_xdlI1CjI0DvyWYr5_6ogAXkHdGpNy7CJWTqCkrECzvbSOF883YHa9GZxdQbrRHMnzg"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:1212/follower/feeds?page=0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1212",
+					"path": [
+						"follower",
+						"feeds"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -73,7 +72,6 @@ public class Day4Service {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         }
-
         UserFollowsEntity userFollowsEntity = new UserFollowsEntity();
         userFollowsEntity.setUserFollowing(from_user);
         userFollowsEntity.setUserFollower(to_user);
@@ -268,7 +266,6 @@ public class Day4Service {
         return new PageImpl<>(pagedFeeds, Pageable.unpaged(), totalItems);
     }
 
-
     // 4-6
     public Page<ArticleFeedsDto> friendsFeeds(Long page, Long limit, Authentication authentication){
 
@@ -296,7 +293,6 @@ public class Day4Service {
         UserEntity admin = adminEntity.get();
         String url = admin.getProfile_image();
 
-
         List<ArticleFeedsDto> allFriendFeeds = new ArrayList<>();
 
         for (Long friendId : FriendsIds) {
@@ -320,7 +316,6 @@ public class Day4Service {
                 allFriendFeeds.add(tarketDto);
             }
         }
-
         int totalItems = allFriendFeeds.size();
         int start = Math.toIntExact(page * limit);
         int end = Math.min((start + Math.toIntExact(limit)), totalItems);

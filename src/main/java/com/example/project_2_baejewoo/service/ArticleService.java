@@ -46,6 +46,7 @@ public class ArticleService {
         newFeed.setContent(dto.getContent());
         newFeed.setUser(user);
         articleRepository.save(newFeed);
+
     }
     // 피드에 이미지 넣기
     public void putImage(Long id, MultipartFile Image, Authentication authentication){
@@ -240,9 +241,9 @@ public class ArticleService {
         }
         // 수정된 내용 저장
         articleRepository.save(article);
-
-
         }
+
+
     public void deleteImage(Long articleId, Authentication authentication, Long  imageId){
         String username = authentication.getName();
 
