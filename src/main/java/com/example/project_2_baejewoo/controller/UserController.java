@@ -58,17 +58,19 @@ public class UserController {
             PasswordEncoder passwordEncoder,
             JwtTokenUtils jwtTokenUtils
     )
-    {   this.service = userService;
+    {
+        this.service = userService;
         this.userDetailsManager = userDetailsManager;
         this.manager = manager;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenUtils = jwtTokenUtils;
     }
+
     // 로그인 , 토큰 발행
     @PostMapping("/login")
     public JwtTokenDto issueJwt(@Valid @RequestBody JwtRequestDto dto) {
-        UserDetails userDetails
-                = manager.loadUserByUsername(dto.getUsername());
+
+        UserDetails userDetails = manager.loadUserByUsername(dto.getUsername());
 
         if (!passwordEncoder.matches(dto.getPassword(), userDetails.getPassword()))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -77,13 +79,12 @@ public class UserController {
         response.setToken(jwtTokenUtils.generateToken(userDetails));
         return response;
     }
+
     // 회원가입 저번 프로젝트와 다르게 회원가입 실패시 클라이언트에게 알려주는 코드
     // 필수 정보를 안 넣으면 403 에러를 발생한다. ???
     @PostMapping("/register")
     public ResponseDto registerUser(@Valid @RequestBody JwtRegisterDto dto){
-
         ResponseDto message = new ResponseDto();
-
         if (dto.getPassword().equals(dto.getPasswordCheck())) {
             log.info("password match!");
 
@@ -106,7 +107,6 @@ public class UserController {
         }
         return message;
     }
-
     // 현재 로그인한 사용자 정보를 확인하기 위한 요청
     @GetMapping("/check")
     public String checkUser(Authentication authentication){

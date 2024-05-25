@@ -20,3 +20,4 @@ public class ArticleImagesEntity {
     ArticleEntity article;
 
 }
+

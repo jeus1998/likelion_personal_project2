@@ -23,7 +23,6 @@ public class CustomUserDetails implements UserDetails {
 
     private String username; // 아이디
     private String password; // 비밀번호
-
     private String address; // 주소
     private String email; // 이메일
     private String phone; // 전화번호

@@ -1,5 +1,11 @@
 HELP.md
 .gradle
+gradlew.bat
+gradlew
+settings.gradle
+out
+.gitignore
+.idea
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
